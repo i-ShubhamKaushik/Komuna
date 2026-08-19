@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toggleReaction, type FeedPost } from "@/lib/queries";
+import { ReportDialog } from "@/components/komuna/report-dialog";
 import { cn } from "@/lib/utils";
 
 function timeAgo(iso: string) {
@@ -125,6 +126,9 @@ export function PostCard({ post, userId, showCommunity = true }: PostCardProps) 
         <span className="text-muted-foreground ml-2 flex items-center gap-1.5 text-xs">
           <MessageSquare className="h-4 w-4" /> {post.comment_count}
         </span>
+        <div className="ml-auto">
+          <ReportDialog targetType="post" targetId={post.id} communityId={post.community_id} />
+        </div>
       </footer>
     </article>
   );

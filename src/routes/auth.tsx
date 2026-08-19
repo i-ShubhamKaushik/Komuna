@@ -35,6 +35,11 @@ const signupSchema = z.object({
     .min(3, "Username must be at least 3 characters")
     .max(24, "Username must be under 24 characters")
     .regex(/^[a-z0-9_]+$/, "Use lowercase letters, numbers and underscores only"),
+  displayName: z
+    .string()
+    .trim()
+    .min(2, "Name must be at least 2 characters")
+    .max(50, "Name must be under 50 characters"),
   email: z.string().trim().email("Enter a valid email").max(255),
   password: z.string().min(8, "Password must be at least 8 characters").max(72),
 });
@@ -52,6 +57,7 @@ function AuthPage() {
   const [loginId, setLoginId] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -112,7 +118,12 @@ function AuthPage() {
       toast.error("Please accept the terms to continue");
       return;
     }
-    const parsed = signupSchema.safeParse({ username: username.toLowerCase(), email, password });
+    const parsed = signupSchema.safeParse({
+      username: username.toLowerCase(),
+      displayName,
+      email,
+      password,
+    });
     if (!parsed.success) {
       toast.error(parsed.error.issues[0]?.message ?? "Please check your details");
       return;
@@ -135,7 +146,7 @@ function AuthPage() {
       password: parsed.data.password,
       options: {
         emailRedirectTo: `${window.location.origin}/`,
-        data: { username: parsed.data.username },
+        data: { username: parsed.data.username, display_name: parsed.data.displayName },
       },
     });
     if (error) {
@@ -148,7 +159,7 @@ function AuthPage() {
       const { error: profileError } = await supabase.from("profiles").insert({
         id: data.user.id,
         username: parsed.data.username,
-        display_name: parsed.data.username,
+        display_name: parsed.data.displayName,
       });
       setBusy(false);
       if (profileError) {
@@ -160,7 +171,7 @@ function AuthPage() {
     }
 
     setBusy(false);
-    toast.success("Check your inbox to verify your email, then sign in.");
+    toast.error("Registration completed, but automatic sign-in failed. Please ensure 'Confirm email' is disabled in your Supabase Auth settings.");
   }
 
   return (
@@ -222,8 +233,19 @@ function AuthPage() {
                     id="username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value.toLowerCase())}
-                    placeholder="shubham"
+                    placeholder="username"
                     maxLength={24}
+                    required
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="displayName">Name</Label>
+                  <Input
+                    id="displayName"
+                    value={displayName}
+                    onChange={(e) => setDisplayName(e.target.value)}
+                    placeholder="Your full name"
+                    maxLength={50}
                     required
                   />
                 </div>

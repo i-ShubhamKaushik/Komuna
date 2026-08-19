@@ -8,11 +8,12 @@ import {
   MessageCircle,
   Plus,
   Settings,
+  ShieldAlert,
   Sparkles,
   User,
   Users,
 } from "lucide-react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -26,6 +27,7 @@ import {
 import { Logo } from "@/components/komuna/logo";
 import { usePlatform } from "@/hooks/use-platform";
 import { useProfile } from "@/hooks/use-session";
+import { fetchModerationScope } from "@/lib/moderation";
 import { cn } from "@/lib/utils";
 
 const primaryNav = [
@@ -44,6 +46,15 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { data: profile, user } = useProfile();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
+  const scope = useQuery({
+    queryKey: ["moderation-scope", user?.id],
+    enabled: Boolean(user?.id),
+    queryFn: () => fetchModerationScope(user!.id),
+  });
+  const canModerate = Boolean(
+    scope.data && (scope.data.isPlatformAdmin || scope.data.communities.length > 0),
+  );
 
   async function signOut() {
     await queryClient.cancelQueries();
@@ -83,6 +94,13 @@ export function AppShell({ children }: { children: ReactNode }) {
                       <DropdownMenuItem asChild>
                         <Link to="/u/$username" params={{ username: profile.username }}>
                           <User className="mr-2 h-4 w-4" /> My profile
+                        </Link>
+                      </DropdownMenuItem>
+                    ) : null}
+                    {canModerate ? (
+                      <DropdownMenuItem asChild>
+                        <Link to="/moderation">
+                          <ShieldAlert className="mr-2 h-4 w-4" /> Moderation
                         </Link>
                       </DropdownMenuItem>
                     ) : null}
