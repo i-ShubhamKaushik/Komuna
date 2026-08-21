@@ -171,7 +171,7 @@ function AuthPage() {
     }
 
     setBusy(false);
-    toast.error("Registration completed, but automatic sign-in failed. Please ensure 'Confirm email' is disabled in your Supabase Auth settings.");
+    toast.success("Check your inbox to verify your email, then sign in.");
   }
 
   return (

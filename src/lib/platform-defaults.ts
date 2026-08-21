@@ -47,7 +47,7 @@ export const DEFAULT_PLATFORM_SETTINGS: PlatformSettings = {
   },
   registration: {
     allow_registration: true,
-    require_email_verification: false,
+    require_email_verification: true,
     allow_username_changes: true,
   },
   communities: {
