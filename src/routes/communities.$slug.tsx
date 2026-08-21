@@ -5,6 +5,7 @@ import { Lock, MessagesSquare, Shield, Users } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/komuna/app-shell";
 import { PostCard } from "@/components/komuna/post-card";
+import { PostComposer } from "@/components/komuna/post-composer";
 import { EmptyState } from "@/components/komuna/empty-state";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -240,6 +241,20 @@ function CommunityPage() {
             <Shield className="text-secondary h-4 w-4" /> Community rules
           </p>
           <p className="text-muted-foreground mt-2 text-xs whitespace-pre-line">{data.rules}</p>
+        </div>
+      ) : null}
+
+      {user && isMember ? (
+        <div className="mt-5">
+          <PostComposer
+            communityId={data.id}
+            userId={user.id}
+            sections={(sections.data ?? []).map((section) => ({
+              id: section.id,
+              name: section.name,
+            }))}
+            defaultSectionId={activeSection}
+          />
         </div>
       ) : null}
 

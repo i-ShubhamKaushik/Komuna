@@ -34,12 +34,10 @@ const primaryNav = [
   { to: "/", label: "Home", icon: Home },
   { to: "/explore", label: "Explore", icon: Compass },
   { to: "/communities", label: "Communities", icon: Users },
+  { to: "/messages", label: "Messages", icon: MessageCircle },
 ] as const;
 
-const soonNav = [
-  { label: "Messages", icon: MessageCircle },
-  { label: "Notifications", icon: Bell },
-] as const;
+const soonNav = [{ label: "Notifications", icon: Bell }] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
   const platform = usePlatform();

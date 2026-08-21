@@ -91,7 +91,9 @@ export function PostCard({ post, userId, showCommunity = true }: PostCardProps) 
         </div>
       </header>
 
-      <h3 className="font-display mt-3 text-base font-semibold">{post.title}</h3>
+      <Link to="/posts/$id" params={{ id: post.id }} className="hover:text-primary block">
+        <h3 className="font-display mt-3 text-base font-semibold">{post.title}</h3>
+      </Link>
 
       {post.body ? (
         revealed ? (
@@ -123,9 +125,13 @@ export function PostCard({ post, userId, showCommunity = true }: PostCardProps) 
         >
           <ThumbsDown className="h-4 w-4" /> {post.dislikes}
         </Button>
-        <span className="text-muted-foreground ml-2 flex items-center gap-1.5 text-xs">
+        <Link
+          to="/posts/$id"
+          params={{ id: post.id }}
+          className="text-muted-foreground hover:text-foreground ml-2 flex items-center gap-1.5 text-xs"
+        >
           <MessageSquare className="h-4 w-4" /> {post.comment_count}
-        </span>
+        </Link>
         <div className="ml-auto">
           <ReportDialog targetType="post" targetId={post.id} communityId={post.community_id} />
         </div>

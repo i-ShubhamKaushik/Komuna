@@ -18,6 +18,9 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as CommunitiesIndexRouteImport } from './routes/communities.index'
 import { Route as CommunitiesSlugRouteImport } from './routes/communities.$slug'
 import { Route as CommunitiesNewRouteImport } from './routes/communities.new'
+import { Route as MessagesIndexRouteImport } from './routes/messages.index'
+import { Route as MessagesIdRouteImport } from './routes/messages.$id'
+import { Route as PostsIdRouteImport } from './routes/posts.$id'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
 
 const IndexRoute = IndexRouteImport.update({
@@ -65,6 +68,21 @@ const CommunitiesNewRoute = CommunitiesNewRouteImport.update({
   path: '/communities/new',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MessagesIndexRoute = MessagesIndexRouteImport.update({
+  id: '/messages/',
+  path: '/messages/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MessagesIdRoute = MessagesIdRouteImport.update({
+  id: '/messages/$id',
+  path: '/messages/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PostsIdRoute = PostsIdRouteImport.update({
+  id: '/posts/$id',
+  path: '/posts/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const UUsernameRoute = UUsernameRouteImport.update({
   id: '/u/$username',
   path: '/u/$username',
@@ -80,8 +98,11 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/communities/$slug': typeof CommunitiesSlugRoute
   '/communities/new': typeof CommunitiesNewRoute
+  '/messages/$id': typeof MessagesIdRoute
+  '/posts/$id': typeof PostsIdRoute
   '/u/$username': typeof UUsernameRoute
   '/communities/': typeof CommunitiesIndexRoute
+  '/messages/': typeof MessagesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -92,8 +113,11 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/communities/$slug': typeof CommunitiesSlugRoute
   '/communities/new': typeof CommunitiesNewRoute
+  '/messages/$id': typeof MessagesIdRoute
+  '/posts/$id': typeof PostsIdRoute
   '/u/$username': typeof UUsernameRoute
   '/communities': typeof CommunitiesIndexRoute
+  '/messages': typeof MessagesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -105,8 +129,11 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/communities/$slug': typeof CommunitiesSlugRoute
   '/communities/new': typeof CommunitiesNewRoute
+  '/messages/$id': typeof MessagesIdRoute
+  '/posts/$id': typeof PostsIdRoute
   '/u/$username': typeof UUsernameRoute
   '/communities/': typeof CommunitiesIndexRoute
+  '/messages/': typeof MessagesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -119,8 +146,11 @@ export interface FileRouteTypes {
     | '/settings'
     | '/communities/$slug'
     | '/communities/new'
+    | '/messages/$id'
+    | '/posts/$id'
     | '/u/$username'
     | '/communities/'
+    | '/messages/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -131,8 +161,11 @@ export interface FileRouteTypes {
     | '/settings'
     | '/communities/$slug'
     | '/communities/new'
+    | '/messages/$id'
+    | '/posts/$id'
     | '/u/$username'
     | '/communities'
+    | '/messages'
   id:
     | '__root__'
     | '/'
@@ -143,8 +176,11 @@ export interface FileRouteTypes {
     | '/settings'
     | '/communities/$slug'
     | '/communities/new'
+    | '/messages/$id'
+    | '/posts/$id'
     | '/u/$username'
     | '/communities/'
+    | '/messages/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -156,8 +192,11 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   CommunitiesSlugRoute: typeof CommunitiesSlugRoute
   CommunitiesNewRoute: typeof CommunitiesNewRoute
+  MessagesIdRoute: typeof MessagesIdRoute
+  PostsIdRoute: typeof PostsIdRoute
   UUsernameRoute: typeof UUsernameRoute
   CommunitiesIndexRoute: typeof CommunitiesIndexRoute
+  MessagesIndexRoute: typeof MessagesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -225,6 +264,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CommunitiesNewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/messages/': {
+      id: '/messages/'
+      path: '/messages'
+      fullPath: '/messages/'
+      preLoaderRoute: typeof MessagesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/messages/$id': {
+      id: '/messages/$id'
+      path: '/messages/$id'
+      fullPath: '/messages/$id'
+      preLoaderRoute: typeof MessagesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/posts/$id': {
+      id: '/posts/$id'
+      path: '/posts/$id'
+      fullPath: '/posts/$id'
+      preLoaderRoute: typeof PostsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/u/$username': {
       id: '/u/$username'
       path: '/u/$username'
@@ -244,8 +304,11 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   CommunitiesSlugRoute: CommunitiesSlugRoute,
   CommunitiesNewRoute: CommunitiesNewRoute,
+  MessagesIdRoute: MessagesIdRoute,
+  PostsIdRoute: PostsIdRoute,
   UUsernameRoute: UUsernameRoute,
   CommunitiesIndexRoute: CommunitiesIndexRoute,
+  MessagesIndexRoute: MessagesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

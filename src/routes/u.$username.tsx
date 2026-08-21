@@ -1,6 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { CalendarDays, UserRound } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { CalendarDays, MessageCircle, UserRound } from "lucide-react";
+import { toast } from "sonner";
+import { startDirectConversation } from "@/lib/messages";
+
 import { AppShell } from "@/components/komuna/app-shell";
 import { EmptyState } from "@/components/komuna/empty-state";
 import { PostCard } from "@/components/komuna/post-card";
@@ -30,9 +33,17 @@ export const Route = createFileRoute("/u/$username")({
 function ProfilePage() {
   const { username } = Route.useParams();
   const { user } = useSession();
+  const navigate = useNavigate();
+
+  const startChat = useMutation({
+    mutationFn: (otherId: string) => startDirectConversation(user!.id, otherId),
+    onSuccess: (id) => navigate({ to: "/messages/$id", params: { id } }),
+    onError: (error: Error) => toast.error(error.message),
+  });
 
   const profile = useQuery({
     queryKey: ["profile", "username", username],
+
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
@@ -87,9 +98,26 @@ function ProfilePage() {
             <AvatarFallback>{data.username.slice(0, 2).toUpperCase()}</AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1">
-            <h1 className="font-display text-xl font-bold">{data.display_name || data.username}</h1>
-            <p className="text-muted-foreground text-sm">@{data.username}</p>
+            <div className="flex items-start gap-3">
+              <div className="min-w-0 flex-1">
+                <h1 className="font-display text-xl font-bold">
+                  {data.display_name || data.username}
+                </h1>
+                <p className="text-muted-foreground text-sm">@{data.username}</p>
+              </div>
+              {user && user.id !== data.id ? (
+                <Button
+                  variant="soft"
+                  size="sm"
+                  disabled={startChat.isPending}
+                  onClick={() => startChat.mutate(data.id)}
+                >
+                  <MessageCircle className="mr-1.5 h-4 w-4" /> Message
+                </Button>
+              ) : null}
+            </div>
             {data.bio ? <p className="mt-3 text-sm">{data.bio}</p> : null}
+
             <p className="text-muted-foreground mt-3 flex items-center gap-1.5 text-xs">
               <CalendarDays className="h-3.5 w-3.5" />
               Joined {new Date(data.created_at).toLocaleDateString()}

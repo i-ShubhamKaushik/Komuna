@@ -133,6 +133,46 @@ export async function fetchAuthorPosts(
   return shapePosts((data ?? []) as RawPost[], userId);
 }
 
+export async function fetchPost(postId: string, userId?: string | null): Promise<FeedPost | null> {
+  const { data, error } = await supabase
+    .from("posts")
+    .select(POST_SELECT)
+    .eq("id", postId)
+    .maybeSingle();
+  if (error) throw error;
+  if (!data) return null;
+  const shaped = await shapePosts([data as RawPost], userId);
+  return shaped[0] ?? null;
+}
+
+export async function createPost(input: {
+  communityId: string;
+  sectionId?: string | null;
+  authorId: string;
+  title: string;
+  body: string;
+  type?: string;
+  isSpoiler?: boolean;
+  isNsfw?: boolean;
+}) {
+  const { data, error } = await supabase
+    .from("posts")
+    .insert({
+      community_id: input.communityId,
+      section_id: input.sectionId ?? null,
+      author_id: input.authorId,
+      title: input.title,
+      body: input.body,
+      type: input.type ?? "text",
+      is_spoiler: input.isSpoiler ?? false,
+      is_nsfw: input.isNsfw ?? false,
+    })
+    .select("id")
+    .single();
+  if (error) throw error;
+  return data;
+}
+
 export async function toggleReaction(
   postId: string,
   userId: string,
